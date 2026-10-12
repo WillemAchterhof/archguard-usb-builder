@@ -49,3 +49,5 @@ main_menu() {
         fi
     done
 }
+
+main_menu
