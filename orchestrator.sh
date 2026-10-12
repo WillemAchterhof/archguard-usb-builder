@@ -1,61 +1,51 @@
 #!/usr/bin/env bash
-set -Eeuo pipefail
+# /menu/main-menu.sh
 
-# ==============================================================================
-#  ArchGuard USB Builder - Orchestrator
-# ==============================================================================
-# /orchestrator.sh
+# ArchGuard USB Builder - Main Menu
 
-# ==============================================================================
-# Initialization
-# ==============================================================================
+main_menu() {
+    local choice
 
-DIR_MAIN="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    while true; do
+        clear
 
-# ==============================================================================
-# Global Libraries
-# ==============================================================================
+        echo "=================================="
+        echo "       ArchGuard USB Builder"
+        echo "=================================="
+        echo
+        echo "  1) Create Custom ISO and Write to USB"
+        echo "  2) Backup Configuration Files"
+        echo "  3) Configuration Menu"
+        echo
+        echo "  0) Exit"
+        echo
+        echo "=================================="
 
-source "$DIR_MAIN/lib/logging.sh"
-source "$DIR_MAIN/lib/common.sh"
-source "$DIR_MAIN/lib/errors.sh"
+        read -r -p "Select an option: " choice
 
-trap 'trap_err' ERR
+        case "$choice" in
+            1)
+                create_custom_iso_and_write_usb
+                ;;
+            2)
+                backup_configuration_files
+                ;;
+            3)
+                configuration_menu
+                ;;
+            0)
+                echo "Exiting ArchGuard USB Builder."
+                return 0
+                ;;
+            *)
+                echo "Invalid option. Please try again."
+                sleep 1
+                ;;
+        esac
 
-# ==============================================================================
-# Modules
-# ==============================================================================
-
-source "$DIR_MAIN/modules/select-disk.sh"
-source "$DIR_MAIN/modules/create-iso.sh"
-source "$DIR_MAIN/modules/create-usb.sh"
-source "$DIR_MAIN/modules/create-key-storage.sh"
-source "$DIR_MAIN/modules/create-boot-storage.sh"
-source "$DIR_MAIN/modules/backup-configuration-files.sh"
-
-# ==============================================================================
-# Config-only mode
-# ==============================================================================
-
-if [[ "${1:-}" == "--configs-only" ]]; then
-    backup_configuration_files
-    cleanup
-    exit 0
-fi
-
-# ==============================================================================
-# Main
-# ==============================================================================
-
-main(){
-    start_sudo_keepalive
-    run_selectdisk || fatal "USB disk selection cancled or failed."
-    run_build_iso
-    run_create_usb || fatal "USB creation failed."
-    create_key_storage
-    create_boot_storage
-    backup_configuration_files
-    cleanup
+        if [[ "$choice" != "0" ]]; then
+            echo
+            read -r -p "Press Enter to return to the main menu..." _
+        fi
+    done
 }
-
-main "$@"
