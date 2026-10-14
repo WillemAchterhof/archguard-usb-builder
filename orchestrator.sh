@@ -47,11 +47,14 @@ source "$DIR_MAIN/modules/backup-configuration-files.sh"
 # ==============================================================================
 
 create_custom_iso_and_write_usb(){
-    run_selectdisk
     run_build_iso
     run_create_usb
     create_key_storage
     create_boot_storage
+}
+
+create_new_custom_certificate(){
+       
 }
 
 # ==============================================================================
@@ -62,6 +65,7 @@ main_menu() {
     local choice
 
     start_sudo_keepalive
+    run_selectdisk
 
     while true; do
         clear
