@@ -1,10 +1,67 @@
 #!/usr/bin/env bash
-# /menu/main-menu.sh
+set -Eeuo pipefail
 
-# ArchGuard USB Builder - Main Menu
+# ==============================================================================
+#  ArchGuard USB Builder - Orchestrator
+# ==============================================================================
+# /orchestrator.sh
+
+# ==============================================================================
+# Initialization
+# ==============================================================================
+
+DIR_MAIN="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+DIR_LIB="$DIR_MAIN/lib"
+DIR_MODULES="$DIR_MAIN/modules"
+
+# ==============================================================================
+# Global Libraries
+# ==============================================================================
+
+source "$DIR_LIB/logging.sh"
+source "$DIR_LIB/common.sh"
+source "$DIR_LIB/errors.sh"
+
+trap 'trap_err' ERR
+
+# ==============================================================================
+# Modules
+# ==============================================================================
+
+source "$DIR_MODULES/select-disk.sh"
+
+# ==============================================================================
+# Modules
+# ==============================================================================
+
+source "$DIR_MAIN/modules/select-disk.sh"
+source "$DIR_MAIN/modules/create-iso.sh"
+source "$DIR_MAIN/modules/create-usb.sh"
+source "$DIR_MAIN/modules/create-key-storage.sh"
+source "$DIR_MAIN/modules/create-boot-storage.sh"
+source "$DIR_MAIN/modules/backup-configuration-files.sh"
+
+# ==============================================================================
+# Functions
+# ==============================================================================
+
+create_custom_iso_and_write_usb(){
+    run_selectdisk
+    run_build_iso
+    run_create_usb
+    create_key_storage
+    create_boot_storage
+}
+
+# ==============================================================================
+# Render Menu
+# ==============================================================================
 
 main_menu() {
     local choice
+
+    start_sudo_keepalive
 
     while true; do
         clear
@@ -35,6 +92,7 @@ main_menu() {
                 ;;
             0)
                 echo "Exiting ArchGuard USB Builder."
+                cleanup
                 return 0
                 ;;
             *)
@@ -50,4 +108,4 @@ main_menu() {
     done
 }
 
-main_menu
+main_menu "$@"
