@@ -74,6 +74,8 @@ main_menu() {
         echo "  2) Backup Configuration Files"
         echo "  3) Configuration Menu"
         echo
+        echo "  9) Create new Custom Certificates"
+        echo
         echo "  0) Exit"
         echo
         echo "=================================="
@@ -89,6 +91,9 @@ main_menu() {
                 ;;
             3)
                 configuration_menu
+                ;;
+            9)
+                new_custom_certificate
                 ;;
             0)
                 echo "Exiting ArchGuard USB Builder."
