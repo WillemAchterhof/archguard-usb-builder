@@ -167,9 +167,6 @@ run_selectdisk(){
         fi
 
         select_disk "$disk"
-        
-        confirm_usb_overwrite \
-        || return 1
 
         return 0
     done
