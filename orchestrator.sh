@@ -29,12 +29,6 @@ trap 'trap_err' ERR
 # Modules
 # ==============================================================================
 
-source "$DIR_MODULES/select-disk.sh"
-
-# ==============================================================================
-# Modules
-# ==============================================================================
-
 source "$DIR_MAIN/modules/select-disk.sh"
 source "$DIR_MAIN/modules/create-iso.sh"
 source "$DIR_MAIN/modules/create-usb.sh"
@@ -53,9 +47,9 @@ create_custom_iso_and_write_usb(){
     create_boot_storage
 }
 
-create_new_custom_certificate(){
-       
-}
+#create_new_custom_certificate(){
+#       
+#}
 
 # ==============================================================================
 # Render Menu

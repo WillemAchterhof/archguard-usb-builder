@@ -4,18 +4,6 @@
 # ArchGuard USB Builder - USB Creation
 # ==============================================================================
 # /modules/create-usb.sh
-#
-# Responsibilities:
-#   - Validate the selected USB disk and ArchGuard ISO
-#   - Confirm the destructive operation
-#   - Write the ISO to the USB disk using dd
-#   - Flush and verify the written ISO data
-#
-# Required globals:
-#   AG_USB_DISK
-#   AG_ISO_FILE
-# ==============================================================================
-
 
 # ==============================================================================
 # Validation
@@ -25,8 +13,7 @@ check_usb_requirements(){
     local command
 
     for command in dd cmp blockdev stat; do
-        command -v "$command" >/dev/null 2>&1 \
-            || fatal "Required command not found: $command"
+        require_command "$command"
     done
 
     [[ -n "${AG_USB_DISK:-}" ]] \

@@ -4,37 +4,6 @@
 # ArchGuard USB Builder - Secure Boot
 # ==============================================================================
 # /modules/secure-boot.sh
-#
-# Runs on the ArchGuard live ISO.
-#
-# The ISO is signed with the ArchGuard db key, so the firmware decides what
-# happens before this script ever runs:
-#
-#   Secure Boot enabled without the ArchGuard db key -> firmware refuses the USB
-#   Secure Boot in Setup Mode                        -> USB boots (this script: enroll)
-#   Secure Boot enabled, ArchGuard keys              -> USB boots (this script: install)
-#
-# States (SetupMode:SecureBoot) handled here:
-#   1:0  Setup Mode             -> unlock AGKEYS, mount it, link it as
-#                                  /var/lib/sbctl, enroll the keys, close
-#                                  AGKEYS, reboot to UEFI
-#   0:1  User Mode, enabled     -> mount AGBOOT, run archguard-install.sh
-#   0:0  User Mode, disabled    -> stop, ask user to enable Secure Boot
-#   else unexpected             -> stop, ask user to reset to Setup Mode
-#
-# Partitions are located by filesystem / LUKS label (AGKEYS / AGBOOT), because
-# the partitions live in the ISO's MBR table and have no GPT name.
-#
-# AGKEYS layout (mirrors /var/lib/sbctl):
-#   sbctl/GUID
-#   sbctl/keys/{PK,KEK,db}/{PK,KEK,db}.{key,pem}
-#
-# The keys are never copied: /var/lib/sbctl is a symlink to the mounted AGKEYS
-# for the duration of the enrollment only.
-#
-# Only ArchGuard keys are enrolled (no Microsoft / OEM keys).
-# ==============================================================================
-
 
 # ==============================================================================
 # Logging / Errors
@@ -153,12 +122,6 @@ check_secure_boot(){
 # ArchISO Boot Source Discovery
 # ==============================================================================
 
-# Return the value of a kernel command-line parameter.
-#
-# Example:
-#   archisosearchuuid=2026-10-06-19-32-59-00
-#
-# Returns an empty string when the parameter is absent.
 cmdline_value(){
     local parameter="$1"
 
@@ -167,13 +130,6 @@ cmdline_value(){
         "$SB_CMDLINE"
 }
 
-# Determine which block device contains the ArchISO filesystem.
-#
-# Fallback order:
-#   1. /run/archiso/bootmnt
-#   2. archisosearchuuid
-#   3. archisolabel
-#   4. archisodevice
 find_boot_source(){
     local source=""
     local value=""
@@ -258,8 +214,6 @@ find_archguard_usb(){
 # ArchGuard Partition Discovery
 # ==============================================================================
 
-# Print the partition on <disk> whose filesystem / LUKS label is <label>.
-# Only real partitions match (not the unlocked device-mapper child).
 find_partition_by_label(){
     local disk="$1"
     local label="$2"
@@ -297,8 +251,6 @@ find_agboot_partition(){
 # AGKEYS
 # ==============================================================================
 
-# Best-effort cleanup (EXIT trap and fatal): drop the sbctl symlink first, then
-# unmount and close AGKEYS, so the keys never stay available.
 cleanup_agkeys(){
     unlink_sbctl_keys || true
 
@@ -346,7 +298,6 @@ close_agkeys(){
     trap - EXIT
 }
 
-# Make sbctl find the keys by linking its key directory to the mounted AGKEYS.
 link_sbctl_keys(){
     local file
 
@@ -378,7 +329,6 @@ link_sbctl_keys(){
         || fatal "Failed to link $SB_SBCTL_DIR"
 }
 
-# Remove the symlink only (never a real directory).
 unlink_sbctl_keys(){
     if [[ -L "$SB_SBCTL_DIR" ]]; then
         rm -f -- "$SB_SBCTL_DIR"
@@ -397,11 +347,6 @@ enroll_secure_boot(){
 
     sbctl status
 
-    # Custom keys only:
-    #   - no --microsoft (-m)
-    #   - no OEM keys (-f)
-    #
-    # --yes-this-might-brick-my-machine only acknowledges sbctl's warning.
     msg "Enrolling ArchGuard Secure Boot keys..."
 
     sbctl enroll-keys \

@@ -4,31 +4,9 @@
 # ArchGuard USB Builder - AGKEYS Creation
 # ==============================================================================
 # /modules/create-key-storage.sh
-#
-# Responsibilities:
-#   - Create the AGKEYS partition
-#   - Format it as LUKS2
-#   - Open the encrypted container
-#   - Create the filesystem
-#   - Copy the ArchGuard Secure Boot key storage
-#   - Verify the copied key material
-#   - Unmount and close the encrypted container
-#
-# Required globals:
-#   AG_USB_DISK
-#   AG_AGKEYS_PASSPHRASE
-#
-# Key source:
-#   /var/lib/sbctl
-#
-# Result:
-#   AG_AGKEYS_PART -> partition containing the encrypted AGKEYS storage
-#
-# Notes:
-#   - The partition is added to the ISO's MBR table (the ISO's hybrid MBR/GPT
-#     is left untouched). MBR partitions have no GPT name, so AGKEYS is found
-#     by its LUKS label (lsblk LABEL column).
-#   - An EXIT trap closes AGKEYS if anything fails while it is unlocked.
+
+# ==============================================================================
+# Initialization
 # ==============================================================================
 
 readonly AGKEYS_SIZE_MIB=64

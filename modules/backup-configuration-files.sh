@@ -4,42 +4,9 @@
 # ArchGuard USB Builder - Configuration Backup
 # ==============================================================================
 # /modules/backup-configuration-files.sh
-#
-# Responsibilities:
-#   - Validate the commands required for configuration backup
-#   - Load the configured paths from configs/backup-configuration-files.sh
-#   - Detect the AGBOOT filesystem and mount it when necessary
-#   - Fall back to ~/Backup when AGBOOT is unavailable
-#   - Replace the previous backup-configs directory with a fresh directory
-#   - Copy configured files and directories while preserving attributes
-#   - Verify the copied files and directories against the device
-#   - Unmount AGBOOT only if this module mounted it
-#
-# Required globals:
-#   DIR_MAIN
-#
-# Required functions:
-#   msg  success  warn  fatal  require_command  cleanup
-#
-# Result:
-#   BACKUP_DIRECTORY -> location of the configuration backup
-#
-# Configuration:
-#   configs/backup-configuration-files.sh
-#   It must define the associative array with `declare -gA BACKUP_PATHS=(...)`.
-#   (-g is required: the file is sourced from inside a function, where a plain
-#   `declare -A` would create a function-local array that is empty afterwards.)
-#
-# Backup destination:
-#   AGBOOT: <AGBOOT mount point>/backup-configs   (written with sudo)
-#   Fallback: ~/Backup/backup-configs
-#
-# Notes:
-#   - Only the backup-configs directory is replaced.
-#   - Missing configured paths are skipped with a warning.
-#   - Copy or verification failures abort the backup.
-#   - AGBOOT is unmounted only if this module mounted it.
-#   - An EXIT trap unmounts AGBOOT if the operation fails while in progress.
+
+# ==============================================================================
+# Initialization
 # ==============================================================================
 
 readonly BACKUP_CONFIG_NAME="backup-configs"
@@ -55,7 +22,6 @@ BACKUP_AGBOOT_MOUNTED_BY_MODULE=0
 BACKUP_SUDO=()
 BACKUP_COPIED_SOURCES=()
 BACKUP_COPIED_TARGETS=()
-
 
 check_backup_requirements(){
     local command

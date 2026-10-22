@@ -4,47 +4,9 @@
 # ArchGuard USB Builder - Boot Storage
 # ==============================================================================
 # /modules/create-boot-storage.sh
-#
-# Responsibilities:
-#   - Validate the selected USB disk and required commands
-#   - Download the ArchGuard installer from GitHub
-#   - Create the AGBOOT partition
-#   - Format AGBOOT as ext4 and apply the AGBOOT label
-#   - Install archguard-install.sh with root ownership and executable permissions
-#   - Verify the partition label and installed installer contents
-#   - Unmount AGBOOT and remove temporary files
-#
-# Required globals:
-#   AG_USB_DISK
-#
-# Result:
-#   AG_AGBOOT_PART -> partition containing the ArchGuard installer
-#
-# Installer source:
-#   https://raw.githubusercontent.com/WillemAchterhof/archguard-install/refs/heads/main/archguard_install.sh
-#
-# Partition:
-#   Label: AGBOOT
-#   Filesystem: ext4
-#   Type: MBR Linux partition (83)
-#   Size: 256 MiB
-#
-# Installer destination:
-#   /archguard-install.sh (root of AGBOOT)
-#
-# File permissions:
-#   root:root 0755
-#
-# Host requirements:
-#   util-linux  e2fsprogs  curl  bash  coreutils  gawk
-#
-# Notes:
-#   - The partition is appended to the ISO's MBR table, leaving the hybrid
-#     GPT layout untouched.
-#   - The partition starts on a 1 MiB boundary, leaving a 1 MiB gap after
-#     the last existing partition to avoid the backup GPT area.
-#   - An EXIT trap unmounts AGBOOT and removes the temporary download if
-#     the operation fails while in progress.
+
+# ==============================================================================
+# Initialization
 # ==============================================================================
 
 readonly AGBOOT_SIZE_MIB=256
@@ -61,6 +23,7 @@ check_boot_storage_requirements(){
     local command
 
     for command in \
+        xargs \
         sfdisk \
         mkfs.ext4 \
         mount \

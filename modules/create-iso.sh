@@ -4,23 +4,6 @@
 # ArchGuard USB Builder - ISO
 # ==============================================================================
 # /modules/create-iso.sh
-#
-# Responsibilities:
-#   - Prepare the ArchISO releng profile (stock, only renamed)
-#   - Configure the Secure Boot bootstrap to run in the root login on tty1
-#   - Build the ISO
-#   - Locate the resulting ISO
-#   - Sign the boot chain (boot loader, kernel, UEFI shell) with the ArchGuard
-#     db key and repack the ISO so it boots with Secure Boot enabled
-#
-# Signing key (override with environment variables):
-#   ISO_SB_KEY   default: /var/lib/sbctl/keys/db/db.key
-#   ISO_SB_CERT  default: /var/lib/sbctl/keys/db/db.pem
-#
-# Host requirements:
-#   archiso  libisoburn  mtools  sbsigntools
-# ==============================================================================
-
 
 # ==============================================================================
 # Initialization
@@ -78,33 +61,39 @@ can_read(){
 # Requirements
 # ==============================================================================
 
+
 install_iso_requirements(){
     packages_install \
         archiso \
         libisoburn \
         mtools \
-        sbsigntools \
-        archinstall \
-        grub
+        sbsigntools
 }
 
 check_iso_requirements(){
     local command
 
-    for command in mkarchiso osirrox xorriso mcopy sbsign sbverify; do
+    for command in \
+        mkarchiso \
+        osirrox \
+        xorriso \
+        mcopy \
+        sbsign \
+        sbverify
+    do
         require_command "$command"
     done
 
     [[ -d "$ISO_PROFILE_BASE" ]] \
         || fatal "ArchISO releng profile not found: $ISO_PROFILE_BASE"
 
-    # Fail now instead of after a long build.
     can_read "$ISO_SB_KEY" \
         || fatal "Signing key not found/readable: $ISO_SB_KEY (set ISO_SB_KEY)"
 
     can_read "$ISO_SB_CERT" \
         || fatal "Signing certificate not found/readable: $ISO_SB_CERT (set ISO_SB_CERT)"
 }
+
 
 
 # ==============================================================================

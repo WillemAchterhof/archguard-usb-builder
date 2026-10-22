@@ -25,16 +25,28 @@ require_command(){
         || fatal "Required command not found: $1"
 }
 
+
 packages_install(){
+    local package
+    local -a missing=()
 
     for package in "$@"; do
         if ! pacman -Q "$package" >/dev/null 2>&1; then
-            PACKAGES_ADDED+=("$package")
+            missing+=("$package")
         fi
     done
-    
-    sudo pacman -S --noconfirm "$@"
+
+    # Nothing to install.
+    (( ${#missing[@]} > 0 )) || return 0
+
+    # Install only packages that were missing.
+    sudo pacman -S --noconfirm "${missing[@]}" \
+        || fatal "Failed to install packages: ${missing[*]}"
+
+    # Track packages only after successful installation.
+    PACKAGES_ADDED+=("${missing[@]}")
 }
+
 
 cleanup(){
     if [[ -n "${SUDO_KEEPALIVE_PID:-}" ]]; then
