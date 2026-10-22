@@ -71,8 +71,10 @@ read_disk_choice(){
 
     DISK_CHOICE=""
 
-    # Ctrl+D (EOF) is treated like quit.
-    read -r -p 'Selection: ' input || return 1
+    if ! IFS= read -r -p 'Selection: ' input; then
+        # EOF: treat as quit.
+        return 1
+    fi
 
     case "$input" in
         q|Q)
@@ -83,15 +85,30 @@ read_disk_choice(){
             ;;
     esac
 
-    # Anything that is not a valid disk number: reload the menu silently.
-    if [[ ! "$input" =~ ^[0-9]+$ ]] ||
-       (( 10#$input < 1 || 10#$input > count )); then
+    # Invalid input: redraw without a warning.
+    if [[ ! "$input" =~ ^[0-9]+$ ]]; then
         return 2
     fi
 
-    DISK_CHOICE=$((10#$input))
-}
+    # Avoid arithmetic evaluation on empty or invalid input.
+    if (( count == 0 )); then
+        return 2
+    fi
 
+    # Reject excessively long numbers before arithmetic evaluation.
+    if (( ${#input} > 9 )); then
+        return 2
+    fi
+
+    local number=$((10#$input))
+
+    if (( number < 1 || number > count )); then
+        return 2
+    fi
+
+    DISK_CHOICE="$number"
+    return 0
+}
 
 # ==============================================================================
 # Selection Validation
@@ -142,6 +159,7 @@ run_selectdisk(){
         || fatal "Required command not found: lsblk"
 
     while true; do
+        # Rediscover disks on every iteration.
         mapfile -t disks < <(find_usb_disks)
 
         display_disk_menu "${disks[@]}"
@@ -153,24 +171,29 @@ run_selectdisk(){
 
             case "$result" in
                 2)
+                    # Refresh or invalid input: redraw menu.
                     continue
                     ;;
                 *)
+                    # q, Ctrl+D, or EOF.
                     msg "Disk selection cancelled."
                     return 1
                     ;;
             esac
         fi
 
+        # Defend against a disk disappearing after discovery.
+        if (( DISK_CHOICE < 1 || DISK_CHOICE > ${#disks[@]} )); then
+            continue
+        fi
+
         disk="${disks[$((DISK_CHOICE - 1))]}"
 
         if ! validate_disk_choice "$disk"; then
-            sleep 1
             continue
         fi
 
         select_disk "$disk"
-
         return 0
     done
 }
