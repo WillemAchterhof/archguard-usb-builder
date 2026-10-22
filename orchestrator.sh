@@ -24,6 +24,7 @@ source "$DIR_LIB/common.sh"
 source "$DIR_LIB/errors.sh"
 
 trap 'trap_err' ERR
+trap 'trap_int' INT TERM
 
 # ==============================================================================
 # Modules
@@ -42,7 +43,7 @@ source "$DIR_MAIN/modules/backup-configuration-files.sh"
 # ==============================================================================
 
 create_custom_iso_and_write_usb(){
-    confirm_usb_overwrite
+    confirm_usb_overwrite || return 0
     run_build_iso
     run_create_usb
     create_key_storage
@@ -61,7 +62,12 @@ main_menu() {
     local choice
 
     start_sudo_keepalive
-    run_selectdisk
+    
+    run_selectdisk || {
+        msg "Exiting ArchGuard USB Builder."
+        cleanup
+        return 0
+    }
 
     while true; do
         clear
