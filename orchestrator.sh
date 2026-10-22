@@ -30,6 +30,7 @@ trap 'trap_err' ERR
 # ==============================================================================
 
 source "$DIR_MAIN/modules/select-disk.sh"
+source "$DIR_MAIN/modules/confirm-destruction.sh"
 source "$DIR_MAIN/modules/create-iso.sh"
 source "$DIR_MAIN/modules/create-usb.sh"
 source "$DIR_MAIN/modules/create-key-storage.sh"
@@ -41,6 +42,7 @@ source "$DIR_MAIN/modules/backup-configuration-files.sh"
 # ==============================================================================
 
 create_custom_iso_and_write_usb(){
+    confirm_usb_overwrite
     run_build_iso
     run_create_usb
     create_key_storage
