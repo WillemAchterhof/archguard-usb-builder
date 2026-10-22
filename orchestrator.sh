@@ -84,7 +84,7 @@ main_menu() {
         echo
         echo "  9) Create new Custom Certificates"
         echo
-        echo "  0) Exit"
+        echo "  q) Exit"
         echo
         echo "=================================="
 
@@ -95,12 +95,20 @@ main_menu() {
         fi
 
         case "$choice" in
-            1) create_custom_iso_and_write_usb ;;
-            2) backup_configuration_files ;;
-            3) configuration_menu ;;
-            9) new_custom_certificate ;;
-            0)
-                msg "Exiting ArchGuard USB Builder."
+            1)
+                create_custom_iso_and_write_usb
+                ;;
+            2)
+                backup_configuration_files
+                ;;
+            3)
+                configuration_menu
+                ;;
+            9)
+                new_custom_certificate
+                ;;
+            q|Q)
+                echo "Exiting ArchGuard USB Builder."
                 cleanup
                 return 0
                 ;;
