@@ -67,13 +67,15 @@ display_disk_menu(){
 
 read_disk_choice(){
     local count="$1"
-    local choice
+    local input
 
-    read -r -p 'Selection: ' choice || return 1
+    DISK_CHOICE=""
 
-    case "$choice" in
+    # Ctrl+D (EOF) is treated like quit.
+    read -r -p 'Selection: ' input || return 1
+
+    case "$input" in
         q|Q)
-            msg "Disk selection cancelled."
             return 1
             ;;
         r|R)
@@ -81,13 +83,13 @@ read_disk_choice(){
             ;;
     esac
 
-    if [[ ! "$choice" =~ ^[0-9]+$ ]] ||
-       (( choice < 1 || choice > count )); then
-        warn "Invalid selection."
+    # Anything that is not a valid disk number: reload the menu silently.
+    if [[ ! "$input" =~ ^[0-9]+$ ]] ||
+       (( 10#$input < 1 || 10#$input > count )); then
         return 2
     fi
 
-    printf '%s\n' "$choice"
+    DISK_CHOICE=$((10#$input))
 }
 
 
@@ -133,7 +135,6 @@ select_disk(){
 
 run_selectdisk(){
     local -a disks=()
-    local choice
     local disk
     local result
 
@@ -145,24 +146,26 @@ run_selectdisk(){
 
         display_disk_menu "${disks[@]}"
 
-        if choice=$(read_disk_choice "${#disks[@]}"); then
+        if read_disk_choice "${#disks[@]}"; then
             :
         else
             result=$?
 
             case "$result" in
-                1)
-                    return 1
-                    ;;
                 2)
                     continue
+                    ;;
+                *)
+                    msg "Disk selection cancelled."
+                    return 1
                     ;;
             esac
         fi
 
-        disk="${disks[$((choice - 1))]}"
+        disk="${disks[$((DISK_CHOICE - 1))]}"
 
         if ! validate_disk_choice "$disk"; then
+            sleep 1
             continue
         fi
 
