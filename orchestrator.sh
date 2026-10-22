@@ -62,13 +62,15 @@ main_menu() {
     local choice
 
     start_sudo_keepalive
-    
-    run_selectdisk || {
+
+    if ! run_selectdisk; then
         msg "Exiting ArchGuard USB Builder."
         cleanup
         return 0
-    }
+    fi
 
+    # Keep your existing main-menu while loop here.
+    # It should start only after run_selectdisk succeeds.
     while true; do
         clear
 
@@ -86,36 +88,30 @@ main_menu() {
         echo
         echo "=================================="
 
-        read -r -p "Select an option: " choice
+        if ! IFS= read -r -p "Select an option: " choice; then
+            msg "Exiting ArchGuard USB Builder."
+            cleanup
+            return 0
+        fi
 
         case "$choice" in
-            1)
-                create_custom_iso_and_write_usb
-                ;;
-            2)
-                backup_configuration_files
-                ;;
-            3)
-                configuration_menu
-                ;;
-            9)
-                new_custom_certificate
-                ;;
+            1) create_custom_iso_and_write_usb ;;
+            2) backup_configuration_files ;;
+            3) configuration_menu ;;
+            9) new_custom_certificate ;;
             0)
-                echo "Exiting ArchGuard USB Builder."
+                msg "Exiting ArchGuard USB Builder."
                 cleanup
                 return 0
                 ;;
             *)
-                echo "Invalid option. Please try again."
-                sleep 1
+                # Invalid choice: immediately redraw the menu.
+                continue
                 ;;
         esac
 
-        if [[ "$choice" != "0" ]]; then
-            echo
-            read -r -p "Press Enter to return to the main menu..." _
-        fi
+        echo
+        read -r -p "Press Enter to return to the main menu..." _ || true
     done
 }
 
