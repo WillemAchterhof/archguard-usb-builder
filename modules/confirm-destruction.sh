@@ -31,11 +31,9 @@ confirm_usb_overwrite(){
         'Type a passphrase for the Secure Boot key storage and press ENTER: ' \
         passphrase
     printf '\n'
-    
-    if [[ -z "$passphrase" ]]; then
-        msg "No passphrase entered. USB creation cancelled."
-        return 1
-    fi
+
+    [[ -n "$passphrase" ]] \
+        || fatal "Passphrase cannot be empty."
 
     read -r -s -p \
         'Confirm passphrase and press ENTER to destroy all data on disk: ' \
