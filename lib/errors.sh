@@ -15,6 +15,21 @@ fatal(){
     exit 1
 }
 
+trap_int(){
+    # Ignore further signals while cleaning up.
+    trap '' INT TERM
+
+    # Ctrl+C during a silent prompt (read -s) can leave echo disabled.
+    stty echo 2>/dev/null || true
+
+    printf '\n'
+    msg "Interrupted. Cleaning up..."
+
+    cleanup || true
+
+    exit 130
+}
+
 trap_err(){
     local exit_code=$?
 
