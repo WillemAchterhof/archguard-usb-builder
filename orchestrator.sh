@@ -82,7 +82,7 @@ main_menu() {
         echo
         echo "  9) Create new Custom Certificates"
         echo
-        echo "  0) Exit"
+        echo "  q) Exit"
         echo
         echo "=================================="
 
@@ -105,7 +105,7 @@ main_menu() {
             9)
                 new_custom_certificate
                 ;;
-            0)
+            q|Q)
                 msg "Exiting ArchGuard USB Builder."
                 cleanup
                 return 0
