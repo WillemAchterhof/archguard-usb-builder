@@ -1,8 +1,8 @@
+
 #!/usr/bin/env bash
-set -Eeuo pipefail
 
 # ==============================================================================
-#  ArchGuard USB Builder - Orchestrator
+# ArchGuard USB Builder - Orchestrator
 # ==============================================================================
 # /orchestrator.sh
 
@@ -51,7 +51,7 @@ create_custom_iso_and_write_usb(){
 }
 
 #create_new_custom_certificate(){
-#       
+#
 #}
 
 # ==============================================================================
@@ -69,8 +69,6 @@ main_menu() {
         return 0
     fi
 
-    # Keep your existing main-menu while loop here.
-    # It should start only after run_selectdisk succeeds.
     while true; do
         clear
 
@@ -84,7 +82,7 @@ main_menu() {
         echo
         echo "  9) Create new Custom Certificates"
         echo
-        echo "  q) Exit"
+        echo "  0) Exit"
         echo
         echo "=================================="
 
@@ -107,13 +105,13 @@ main_menu() {
             9)
                 new_custom_certificate
                 ;;
-            q|Q)
-                echo "Exiting ArchGuard USB Builder."
+            0)
+                msg "Exiting ArchGuard USB Builder."
                 cleanup
                 return 0
                 ;;
             *)
-                # Invalid choice: immediately redraw the menu.
+                # Invalid input: immediately redraw the main menu.
                 continue
                 ;;
         esac

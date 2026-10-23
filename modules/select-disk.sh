@@ -1,3 +1,4 @@
+
 #!/usr/bin/env bash
 
 # ==============================================================================
@@ -28,7 +29,7 @@ display_disk_menu(){
     local model
 
     clear
-    
+
     printf '\n'
     printf '%s\n' '================================================'
     printf '%s\n' ' ArchGuard USB Builder - Disk Selection'
@@ -61,6 +62,7 @@ display_disk_menu(){
     printf '\n'
 }
 
+
 # ==============================================================================
 # User Input
 # ==============================================================================
@@ -68,11 +70,12 @@ display_disk_menu(){
 read_disk_choice(){
     local count="$1"
     local input
+    local number
 
     DISK_CHOICE=""
 
+    # Ctrl+D (EOF) is treated like quit.
     if ! IFS= read -r -p 'Selection: ' input; then
-        # EOF: treat as quit.
         return 1
     fi
 
@@ -85,12 +88,12 @@ read_disk_choice(){
             ;;
     esac
 
-    # Invalid input: redraw without a warning.
+    # Invalid input: redraw the menu silently.
     if [[ ! "$input" =~ ^[0-9]+$ ]]; then
         return 2
     fi
 
-    # Avoid arithmetic evaluation on empty or invalid input.
+    # No valid selection exists when there are no disks.
     if (( count == 0 )); then
         return 2
     fi
@@ -100,7 +103,7 @@ read_disk_choice(){
         return 2
     fi
 
-    local number=$((10#$input))
+    number=$((10#$input))
 
     if (( number < 1 || number > count )); then
         return 2
@@ -109,6 +112,7 @@ read_disk_choice(){
     DISK_CHOICE="$number"
     return 0
 }
+
 
 # ==============================================================================
 # Selection Validation
@@ -159,7 +163,7 @@ run_selectdisk(){
         || fatal "Required command not found: lsblk"
 
     while true; do
-        # Rediscover disks on every iteration.
+        # Discover disks on every iteration, including refreshes.
         mapfile -t disks < <(find_usb_disks)
 
         display_disk_menu "${disks[@]}"
@@ -182,14 +186,11 @@ run_selectdisk(){
             esac
         fi
 
-        # Defend against a disk disappearing after discovery.
-        if (( DISK_CHOICE < 1 || DISK_CHOICE > ${#disks[@]} )); then
-            continue
-        fi
-
         disk="${disks[$((DISK_CHOICE - 1))]}"
 
         if ! validate_disk_choice "$disk"; then
+            # Keep the warning visible before the menu is cleared.
+            sleep 1
             continue
         fi
 

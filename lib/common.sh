@@ -1,3 +1,4 @@
+
 #!/usr/bin/env bash
 
 # ==============================================================================
@@ -25,7 +26,6 @@ require_command(){
         || fatal "Required command not found: $1"
 }
 
-
 packages_install(){
     local package
     local -a missing=()
@@ -47,11 +47,23 @@ packages_install(){
     PACKAGES_ADDED+=("${missing[@]}")
 }
 
-
 cleanup(){
+    # Prevent recursive or repeated cleanup.
+    [[ "${CLEANUP_RUNNING:-0}" == 1 ]] && return 0
+    CLEANUP_RUNNING=1
+
+    # Prevent signals from triggering cleanup recursively.
+    trap '' INT TERM
+
     if [[ -n "${SUDO_KEEPALIVE_PID:-}" ]]; then
+        # Kill direct children, including a pending sleep 60.
+        pkill -P "$SUDO_KEEPALIVE_PID" 2>/dev/null || true
+
+        # Stop and reap the keepalive subshell.
         kill "$SUDO_KEEPALIVE_PID" 2>/dev/null || true
         wait "$SUDO_KEEPALIVE_PID" 2>/dev/null || true
+
+        SUDO_KEEPALIVE_PID=""
     fi
 
     if (( ${#PACKAGES_ADDED[@]} > 0 )); then
@@ -60,6 +72,8 @@ cleanup(){
         sudo pacman -Rns --noconfirm \
             "${PACKAGES_ADDED[@]}" \
             2>/dev/null || true
+
+        PACKAGES_ADDED=()
     fi
 
     if [[ -d "${DIR_PROJECT:-}" ]]; then
