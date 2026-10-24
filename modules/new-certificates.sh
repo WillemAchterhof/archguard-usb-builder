@@ -29,7 +29,6 @@ CERT_BUILD_STATUS=0
 check_certificate_requirements() {
     if ! require_command sbctl
         packages_install sbctl
-
     fi
 
     if [[ -e "$CERT_BACKUP_DIR" || -L "$CERT_BACKUP_DIR" ]]; then
