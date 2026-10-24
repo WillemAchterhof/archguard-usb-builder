@@ -27,8 +27,12 @@ CERT_BUILD_STATUS=0
 # ------------------------------------------------------------------------------
 
 check_certificate_requirements() {
-    if ! require_command sbctl
+    if ! command -v sbctl >/dev/null 2>&1; then
         packages_install sbctl
+    fi
+
+    if ! command -v sbctl >/dev/null 2>&1; then
+        fatal "Required command not found: sbctl"
     fi
 
     if [[ -e "$CERT_BACKUP_DIR" || -L "$CERT_BACKUP_DIR" ]]; then
