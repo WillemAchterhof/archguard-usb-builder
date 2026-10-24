@@ -50,10 +50,6 @@ create_custom_iso_and_write_usb(){
     create_boot_storage
 }
 
-#create_new_custom_certificate(){
-#
-#}
-
 # ==============================================================================
 # Render Menu
 # ==============================================================================
@@ -103,7 +99,7 @@ main_menu() {
                 configuration_menu
                 ;;
             9)
-                new_custom_certificate
+                create_new_custom_certificate
                 ;;
             q|Q)
                 msg "Exiting ArchGuard USB Builder."
