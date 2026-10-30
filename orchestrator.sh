@@ -22,6 +22,7 @@ DIR_MENU="$DIR_MAIN/menu"
 source "$DIR_LIB/logging.sh"
 source "$DIR_LIB/common.sh"
 source "$DIR_LIB/errors.sh"
+source "$DIR_LIB/check-usb.sh"
 
 trap 'trap_err' ERR
 trap 'trap_int' INT TERM
