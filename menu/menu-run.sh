@@ -12,12 +12,7 @@ MENU_MODULES="$ROOT_MENU/modules"
 # Menu Dependencies
 declare -A MENU_OPTIONS
 
-
-source "$MENU_MODULES/menu-select_custom.sh"
-
-for module in "$MENU_MODULES"/menu-*.sh; do
-    [[ "$module" == "$MENU_MODULES/menu-select_custom.sh" ]] && continue
-
+for module in "$MENU_MODULES"/*.sh; do
     source "$module"
     MENU_ORDER+=("$MENU_KEY")
 done
