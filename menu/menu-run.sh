@@ -23,6 +23,6 @@ configuration_menu(){
     )
     
     # Menu Handling
-    source "$ROOT_MENU/menu-input.sh"
-    source "$ROOT_MENU/menu-render.sh"
+    source "$DIR_MENU/input.sh"
+    source "$DIR_MENU/render.sh"
 }
