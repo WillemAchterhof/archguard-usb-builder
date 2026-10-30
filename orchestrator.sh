@@ -80,8 +80,6 @@ main_menu() {
         echo "  2) Backup Configuration Files"
         echo "  3) Configuration Menu"
         echo
-        echo "  9) Create new Custom Certificates"
-        echo
         echo "  q) Exit"
         echo
         echo "=================================="
@@ -91,7 +89,6 @@ main_menu() {
             cleanup
             return 0
         fi
-
         case "$choice" in
             1)
                 create_custom_iso_and_write_usb
@@ -102,23 +99,19 @@ main_menu() {
             3)
                 configuration_menu
                 ;;
-            9)
-                create_new_custom_certificate
-                ;;
             q|Q)
                 msg "Exiting ArchGuard USB Builder."
                 cleanup
                 return 0
                 ;;
             *)
-                # Invalid input: immediately redraw the main menu.
                 continue
                 ;;
         esac
-
-        echo
-        read -r -p "Press Enter to return to the main menu..." _ || true
-    done
-}
+        
+                echo
+                read -r -p "Press Enter to return to the main menu..." _ || true
+            done
+        }
 
 main_menu "$@"
