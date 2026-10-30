@@ -6,6 +6,7 @@
 # /menu/menu-run.sh
 
 configuration_menu() {
+    require_archguard_usb || return 0
 
     # ==========================================================================
     # Menu Initialization
