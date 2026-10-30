@@ -13,6 +13,7 @@ DIR_MAIN="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 DIR_LIB="$DIR_MAIN/lib"
 DIR_MODULES="$DIR_MAIN/modules"
+DIR_MENU="$DIR_MAIN/menu"
 
 # ==============================================================================
 # Global Libraries
