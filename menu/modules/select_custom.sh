@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 # Custom Menu Selection
 # ------------------------------------------------------------------------------
-# /menu/modules/menu-select_custom.sh
+# /menu/modules/select_custom.sh
 
 menu_select_custom()
 {
