@@ -30,14 +30,16 @@ trap 'trap_int' INT TERM
 # Modules
 # ==============================================================================
 
-source "$DIR_MAIN/modules/select-disk.sh"
-source "$DIR_MAIN/modules/confirm-destruction.sh"
-source "$DIR_MAIN/modules/create-iso.sh"
-source "$DIR_MAIN/modules/create-usb.sh"
-source "$DIR_MAIN/modules/create-key-storage.sh"
-source "$DIR_MAIN/modules/create-boot-storage.sh"
-source "$DIR_MAIN/modules/backup-configuration-files.sh"
-source "$DIR_MAIN/modules/new-certificates.sh"
+source "$DIR_MODULES/select-disk.sh"
+source "$DIR_MODULES/confirm-destruction.sh"
+source "$DIR_MODULES/create-iso.sh"
+source "$DIR_MODULES/create-usb.sh"
+source "$DIR_MODULES/create-key-storage.sh"
+source "$DIR_MODULES/create-boot-storage.sh"
+source "$DIR_MODULES/backup-configuration-files.sh"
+source "$DIR_MODULES/new-certificates.sh"
+source "$DIR_MENU/menu-run.sh"
+
 
 # ==============================================================================
 # Functions
