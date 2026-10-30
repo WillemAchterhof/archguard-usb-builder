@@ -39,20 +39,8 @@ source "$DIR_MODULES/create-key-storage.sh"
 source "$DIR_MODULES/create-boot-storage.sh"
 source "$DIR_MODULES/backup-configuration-files.sh"
 source "$DIR_MODULES/new-certificates.sh"
+source "$DIR_MODULES/write-usb.sh"
 source "$DIR_MENU/menu-run.sh"
-
-
-# ==============================================================================
-# Functions
-# ==============================================================================
-
-create_custom_iso_and_write_usb(){
-    confirm_usb_overwrite || return 0
-    run_build_iso
-    run_create_usb
-    create_key_storage
-    create_boot_storage
-}
 
 # ==============================================================================
 # Render Menu
