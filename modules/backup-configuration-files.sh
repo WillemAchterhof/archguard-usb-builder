@@ -381,6 +381,7 @@ close_backup_destination(){
 
 
 backup_configuration_files(){
+    require_archguard_usb || return 0
     check_backup_requirements
     load_backup_configuration
     check_backup_configuration
