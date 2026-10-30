@@ -7,7 +7,7 @@
 
 configuration_menu(){
     # Variables
-    MENU_MODULES="$ROOT_MENU/modules"
+    MENU_MODULES="$DIR_MENU/modules"
     
     # Menu Dependencies
     declare -A MENU_OPTIONS
