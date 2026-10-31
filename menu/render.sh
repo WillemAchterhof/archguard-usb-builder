@@ -15,7 +15,20 @@ menu_render() {
     printf "==================================\n"
     printf "\n"
 
-    # Configuration options will appear here
+    for option in "${MENU_ORDER[@]}"; do
+
+        definition="${MENU_OPTIONS["$option"]:-}"
+
+        [[ -n "$definition" ]] || continue
+
+        IFS='|' read -r function description variable <<< "$definition"
+
+        printf "   [%s] %-25s : %s\n" \
+            "$option" \
+            "$description" \
+            "${!variable-}"
+
+    done
 
     printf "\n"
     printf "  q) Return to Main Menu\n"
