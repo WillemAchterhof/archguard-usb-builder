@@ -30,8 +30,7 @@ menu_initialize() {
 
 run_menu() {
 
-    local key
-    local selected_option=""
+    local choice
 
     menu_initialize
 
@@ -39,34 +38,21 @@ run_menu() {
 
         menu_render
 
-        key=""
-
-        if ! IFS= read -rsn1 key; then
+        if ! IFS= read -r -p "Select an option: " choice; then
             return 0
         fi
 
-        case "$key" in
+        case "$choice" in
 
-            z|Z)
+            q|Q)
                 return 0
                 ;;
 
             *)
-                selected_option="$key"
+                menu_handle_input "$choice"
                 ;;
 
         esac
-
-        # Wait for Enter
-        key=""
-
-        if ! IFS= read -rsn1 key; then
-            return 0
-        fi
-
-        if [[ "$key" == "" ]]; then
-            menu_handle_input "$selected_option"
-        fi
 
     done
 }

@@ -10,20 +10,17 @@ menu_render() {
 
     clear
 
-    printf "================================================================================\n"
-    printf " ArchGuard USB Builder - Configuration Menu\n"
-    printf "================================================================================\n"
+    printf "==================================\n"
+    printf "       ArchGuard USB Builder\n"
+    printf "==================================\n"
     printf "\n"
 
-    printf " Configuration Options\n"
-    printf " --------------------------------------------------------------------------------\n"
+    # Configuration options will appear here
+
+    printf "\n"
+    printf "  q) Return to Main Menu\n"
     printf "\n"
 
-    printf " Actions\n"
-    printf " --------------------------------------------------------------------------------\n"
-    printf "   [z] Return to Main Menu\n"
-    printf "\n"
-
-    printf "================================================================================\n"
+    printf "==================================\n"
 
 }
