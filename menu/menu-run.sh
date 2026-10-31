@@ -1,52 +1,20 @@
+
 #!/usr/bin/env bash
 
 # ==============================================================================
-# ArchGuard USB Builder - Menu Loader
+# ArchGuard USB Builder - Configuration Menu
 # ==============================================================================
 # /menu/menu-run.sh
 
 configuration_menu() {
+
     require_archguard_usb || return 0
 
-    # ==========================================================================
-    # Menu Initialization
-    # ==========================================================================
-
-    local MENU_MODULES="$DIR_MENU/modules"
-    local module
-
-    declare -gA MENU_OPTIONS=()
-    declare -ga MENU_ORDER=()
-
-    # ==========================================================================
-    # Load Menu Modules
-    # ==========================================================================
-
-    for module in "$MENU_MODULES"/*.sh; do
-        [[ -f "$module" ]] || continue
-
-        source "$module"
-        MENU_ORDER+=("$MENU_KEY")
-    done
-
-    # ==========================================================================
-    # Sort Menu Order
-    # ==========================================================================
-
-    mapfile -t MENU_ORDER < <(
-        printf '%s\n' "${MENU_ORDER[@]}" | sort
-    )
-
-    # ==========================================================================
-    # Load Menu Dependencies
-    # ==========================================================================
-
-    source "$DIR_MENU/input.sh"
+    # Load menu components
+    source "$DIR_MENU/menu.sh"
     source "$DIR_MENU/render.sh"
+    source "$DIR_MENU/input.sh"
 
-    # ==========================================================================
-    # Start Menu
-    # ==========================================================================
-
-    menu_loop
+    # Start menu
+    run_menu
 }

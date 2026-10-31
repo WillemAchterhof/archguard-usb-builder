@@ -1,37 +1,21 @@
+
 #!/usr/bin/env bash
 
-# ------------------------------------------------------------------------------
-# Menu Input
-# ------------------------------------------------------------------------------
+# ==============================================================================
+# ArchGuard USB Builder - Menu Input
+# ==============================================================================
 # /menu/input.sh
 
-menu_handle_input()
-{
+menu_handle_input() {
+
     local option="$1"
-    local menu_option
-    local definition=""
-    local function
-    local description
-    local argument
 
-    [[ -n "$option" ]] || return 0
+    case "$option" in
 
-    for menu_option in "${MENU_ORDER[@]}"; do
-        case "$option" in
-            "$menu_option"|${menu_option^^})
-                definition="${MENU_OPTIONS["$option"]:-}"
-                break
-                ;;
-        esac
-    done
+        *)
+            return 0
+            ;;
 
-    [[ -n "$definition" ]] || return 0
+    esac
 
-    IFS='|' read -r function description argument <<< "$definition"
-
-    if [[ -n "$argument" ]]; then
-        "$function" "$argument"
-    else
-        "$function"
-    fi
 }
