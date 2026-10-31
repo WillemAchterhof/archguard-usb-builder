@@ -45,7 +45,7 @@ run_menu() {
         case "$choice" in
 
             q|Q)
-                return 0
+                return 1
                 ;;
 
             *)
