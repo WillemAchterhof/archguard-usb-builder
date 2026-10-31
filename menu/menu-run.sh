@@ -8,7 +8,7 @@
 
 configuration_menu() {
 
-    #require_archguard_usb || return 0
+    require_archguard_usb || return 0
 
     # Load menu components
     source "$DIR_MENU/menu.sh"
