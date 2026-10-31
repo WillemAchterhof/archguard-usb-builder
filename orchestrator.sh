@@ -143,9 +143,6 @@ main_menu() {
                 continue
                 ;;
         esac
-        
-                echo
-                read -r -p "Press Enter to return to the main menu..." _ || true
             done
         }
 
