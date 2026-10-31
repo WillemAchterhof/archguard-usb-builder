@@ -106,8 +106,12 @@ create_new_certificates() {
 # ------------------------------------------------------------------------------
 
 create_new_custom_certificate() {
+    if (( NEW_CERT == 1 )); then
+        warn "Temporary certificates are already active."
+        return 0
+    fi
+
     if ! check_certificate_requirements; then
-        warn "Certificate requirements are not satisfied."
         return 1
     fi
 
@@ -116,18 +120,21 @@ create_new_custom_certificate() {
         return 1
     fi
 
+    NEW_CERT=1
+
     if ! create_new_certificates; then
-        warn "Temporary certificate creation or verification failed."
+        warn "Temporary certificate creation failed."
 
         if ! restore_original_custom_certificate; then
-            fatal "Could not restore the original certificates."
+            warn "AUTOMATIC RESTORATION FAILED."
+            warn "Inspect: $CERT_DIR"
+            warn "Inspect: $CERT_BACKUP_DIR"
         fi
 
         return 1
     fi
 
-    success "New temporary certificates created and verified."
-
+    success "Temporary certificates are now active."
     return 0
 }
 
@@ -137,11 +144,13 @@ create_new_custom_certificate() {
 # ------------------------------------------------------------------------------
 
 restore_original_custom_certificate() {
-    (( CERT_SWAPPED == 1 )) || return 0
+    (( CERT_SWAPPED == 1 )) || {
+        NEW_CERT=0
+        return 0
+    }
 
     msg "Restoring the original certificate state..."
 
-    # Protect the original backup.
     if (( CERT_HAD_ORIGINAL == 1 )) &&
        [[ ! -d "$CERT_BACKUP_DIR" ]]; then
         warn "Original certificate backup is missing: $CERT_BACKUP_DIR"
@@ -149,7 +158,6 @@ restore_original_custom_certificate() {
         return 1
     fi
 
-    # Remove temporary certificates.
     if [[ -e "$CERT_DIR" || -L "$CERT_DIR" ]]; then
         if ! sudo rm -rf -- "$CERT_DIR"; then
             warn "Could not remove temporary certificates."
@@ -157,7 +165,6 @@ restore_original_custom_certificate() {
         fi
     fi
 
-    # Restore original certificates.
     if (( CERT_HAD_ORIGINAL == 1 )); then
         if ! sudo mv -- "$CERT_BACKUP_DIR" "$CERT_DIR"; then
             warn "Could not restore the original certificates."
@@ -168,8 +175,8 @@ restore_original_custom_certificate() {
 
     CERT_SWAPPED=0
     CERT_HAD_ORIGINAL=0
+    NEW_CERT=0
 
-    success "Original certificate state restored."
-
+    success "Original certificates restored."
     return 0
 }

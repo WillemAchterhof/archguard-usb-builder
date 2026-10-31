@@ -55,6 +55,17 @@ cleanup(){
     # Prevent signals from triggering cleanup recursively.
     trap '' INT TERM
 
+    if (( ${NEW_CERT:-0} == 1 )); then
+        msg "Temporary certificates are active. Restoring original certificates..."
+
+        if ! restore_original_custom_certificate; then
+            warn "AUTOMATIC CERTIFICATE RESTORATION FAILED."
+            warn "Do not delete either certificate path."
+            warn "Inspect: /var/lib/sbctl"
+            warn "Inspect: /var/lib/sbctl.old"
+        fi
+    fi
+
     if [[ -n "${SUDO_KEEPALIVE_PID:-}" ]]; then
         # Kill direct children, including a pending sleep 60.
         pkill -P "$SUDO_KEEPALIVE_PID" 2>/dev/null || true

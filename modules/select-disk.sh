@@ -67,7 +67,7 @@ display_disk_menu(){
 # User Input
 # ==============================================================================
 
-read_disk_choice(){
+read_disk_choice() {
     local count="$1"
     local input
     local number
@@ -154,7 +154,7 @@ select_disk(){
 # Module Entry Point
 # ==============================================================================
 
-run_selectdisk(){
+run_selectdisk() {
     local -a disks=()
     local disk
     local result
@@ -168,23 +168,23 @@ run_selectdisk(){
 
         display_disk_menu "${disks[@]}"
 
-        if read_disk_choice "${#disks[@]}"; then
-            :
-        else
-            result=$?
+        read_disk_choice "${#disks[@]}"
+        result=$?
 
-            case "$result" in
-                2)
-                    # Refresh or invalid input: redraw menu.
-                    continue
-                    ;;
-                *)
-                    # q, Ctrl+D, or EOF.
-                    msg "Disk selection cancelled."
-                    return 1
-                    ;;
-            esac
-        fi
+        case "$result" in
+            0)
+                # A valid selection was entered.
+                ;;
+            2)
+                # Refresh or invalid input: redraw menu.
+                continue
+                ;;
+            *)
+                # q, Ctrl+D, or EOF.
+                msg "Disk selection cancelled."
+                return 1
+                ;;
+        esac
 
         disk="${disks[$((DISK_CHOICE - 1))]}"
 

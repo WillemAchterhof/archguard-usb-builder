@@ -39,8 +39,40 @@ source "$DIR_MODULES/create-key-storage.sh"
 source "$DIR_MODULES/create-boot-storage.sh"
 source "$DIR_MODULES/backup-configuration-files.sh"
 source "$DIR_MODULES/new-certificates.sh"
-source "$DIR_MODULES/write-usb.sh"
 source "$DIR_MENU/menu-run.sh"
+
+
+# ==============================================================================
+# Small Menu Functions
+# ==============================================================================
+
+toggle_custom_certificate() {
+    if (( NEW_CERT == 1 )); then
+        restore_original_custom_certificate
+    else
+        create_new_custom_certificate
+    fi
+}
+
+create_custom_iso_and_write_usb() {
+
+    confirm_usb_overwrite || return 0
+    run_build_iso || return $?
+    run_create_usb || return $?
+    create_key_storage || return $?
+    create_boot_storage || return $?
+
+    success "USB creation workflow completed."
+    return 0
+}
+
+select_new_usbdisk(){
+    if run_selectdisk; then
+        msg "USB disk selection updated."
+    else
+        msg "USB disk selection cancelled."
+    fi
+}
 
 # ==============================================================================
 # Render Menu
@@ -68,6 +100,15 @@ main_menu() {
         echo "  2) Backup Configuration Files"
         echo "  3) Configuration Menu"
         echo
+        
+                if (( NEW_CERT == 1 )); then
+                    echo "  c) Certificate: New"
+                else
+                    echo "  c) Certificate: Current"
+                fi
+        
+        echo "  s) Select new USB"
+        echo
         echo "  q) Exit"
         echo
         echo "=================================="
@@ -86,6 +127,12 @@ main_menu() {
                 ;;
             3)
                 configuration_menu
+                ;;
+            c)
+                toggle_custom_certificate
+                ;;
+            s)
+                select_new_usbdisk
                 ;;
             q|Q)
                 msg "Exiting ArchGuard USB Builder."
