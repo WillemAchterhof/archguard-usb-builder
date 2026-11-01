@@ -1,20 +1,28 @@
-
 #!/usr/bin/env bash
 
 # ==============================================================================
-# ArchGuard USB Builder - Configuration Menu
+# ArchGuard USB Builder - Menu Loader
 # ==============================================================================
 # /menu/menu-run.sh
 
-configuration_menu() {
+# ==============================================================================
+# Menu Variables
+# ==============================================================================
 
-    require_archguard_usb || return 0
+MENU_BASE="$DIR_MENU/base/"
+MENU_SOFTWARE="$DIR_MENU/software/"
 
-    # Load menu components
-    source "$DIR_MENU/menu.sh"
-    source "$DIR_MENU/render.sh"
-    source "$DIR_MENU/input.sh"
+# ==============================================================================
+# Load Shared Menu Components
+# ==============================================================================
 
-    # Start menu
-    run_menu
-}
+source "$DIR_MENU/menu.sh"
+source "$DIR_MENU/render.sh"
+source "$DIR_MENU/input.sh"
+
+# ==============================================================================
+# Load Submenu Entry Points
+# ==============================================================================
+
+source "${MENU_BASE}base-run.sh"
+source "${MENU_SOFTWARE}software-run.sh"

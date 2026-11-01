@@ -41,7 +41,6 @@ source "$DIR_MODULES/backup-configuration-files.sh"
 source "$DIR_MODULES/new-certificates.sh"
 source "$DIR_MENU/menu-run.sh"
 
-
 # ==============================================================================
 # Small Menu Functions
 # ==============================================================================
@@ -98,7 +97,8 @@ main_menu() {
         echo
         echo "  1) Create Custom ISO and Write to USB"
         echo "  2) Backup Configuration Files"
-        echo "  3) Configuration Menu"
+        echo "  3) Base Configuration"
+        echo "  4) Software Configuration"
         echo
         
                 if (( NEW_CERT == 1 )); then
@@ -126,7 +126,10 @@ main_menu() {
                 backup_configuration_files
                 ;;
             3)
-                configuration_menu
+                base_configuration_menu
+                ;;
+            4)
+                software_configuration_menu
                 ;;
             c)
                 toggle_custom_certificate
