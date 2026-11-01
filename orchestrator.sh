@@ -127,6 +127,7 @@ main_menu() {
                 ;;
             3)
                 base_configuration_menu
+                sleep 3
                 ;;
             4)
                 software_configuration_menu
