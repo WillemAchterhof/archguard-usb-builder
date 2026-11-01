@@ -2,7 +2,7 @@
 # ArchGuard USB Builder - Base Configuration Menu
 # /menu/base/base-run.sh
 
-readonly BASE_CONFIG_DIR="$DIR_MAIN\config-files"
+readonly BASE_CONFIG_DIR="$DIR_MAIN/config-files"
 readonly BASE_CONFIG_FILE="$BASE_CONFIG_DIR/config-base.env"
 readonly BASE_BTRFS_FILE="$BASE_CONFIG_DIR/config-btrfs.env"
 
