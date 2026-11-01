@@ -243,6 +243,26 @@ verify_agboot_partition(){
     success "AGBOOT label, permissions, and installer contents verified."
 }
 
+copy_necessary_configs() {
+    local source_dir="$DIR_MAIN/config-files"
+    local destination_dir="$AGBOOT_MOUNT/config-files"
+
+    msg "Copying configuration files to AGBOOT..."
+
+    [[ -d "$source_dir" ]] \
+        || agboot_fatal "Configuration source directory not found: $source_dir"
+
+    mountpoint -q "$AGBOOT_MOUNT" \
+        || agboot_fatal "AGBOOT is not mounted."
+
+    sudo mkdir -p "$destination_dir" \
+        || agboot_fatal "Failed to create AGBOOT configuration directory."
+
+    sudo cp -r -- "$source_dir/." "$destination_dir/" \
+        || agboot_fatal "Failed to copy configuration files to AGBOOT."
+
+    success "Configuration files copied to AGBOOT."
+}
 
 close_agboot_partition(){
     msg "Closing AGBOOT..."
@@ -278,6 +298,7 @@ create_boot_storage(){
     mount_agboot_partition
     populate_agboot_partition
     verify_agboot_partition
+    copy_necessary_configs
     close_agboot_partition
 
     success "AGBOOT successfully created and verified."
