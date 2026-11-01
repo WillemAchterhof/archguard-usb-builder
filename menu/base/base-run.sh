@@ -2,23 +2,23 @@
 # ArchGuard USB Builder - Base Configuration Menu
 # /menu/base/base-run.sh
 
-readonly BASE_CONFIG_DIR="$DIR_MAIN/config-files"
-readonly BASE_CONFIG_FILE="$BASE_CONFIG_DIR/config-base.env"
-readonly BASE_BTRFS_FILE="$BASE_CONFIG_DIR/config-btrfs.env"
+readonly BASE_CONFIG_DIR="config-files"
+readonly BASE_CONFIG_FILE="config-base.env"
+readonly BASE_BTRFS_FILE="config-btrfs.env"
 
 base_configuration_menu() {
     local choice
 
     # Mount AGBOOT before accessing its configuration files.
     if ! base_mount_agboot; then
-        error "Unable to access AGBOOT configuration storage."
+        msg "Unable to access AGBOOT configuration storage."
         return 1
     fi
 
     while true; do
         # Load the current configuration from AGBOOT.
         if ! base_load_config; then
-            error "Unable to load Base Configuration."
+            msg "Unable to load Base Configuration."
             base_unmount_agboot
             return 1
         fi
