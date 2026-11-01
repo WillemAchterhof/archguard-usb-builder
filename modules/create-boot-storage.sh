@@ -246,14 +246,13 @@ verify_agboot_partition(){
 
 
 copy_configs() {
-    local source_dir="$DIR_MAIN/config-files"
+    local source_dir="$DIR_MAIN/configs"
     local destination_dir="$AGBOOT_MOUNT/config-files"
+    local file
+    local name
+    local copied=0
 
     msg "Copying configuration files to AGBOOT..."
-
-    printf '[DEBUG] DIR_MAIN: %s\n' "$DIR_MAIN"
-    printf '[DEBUG] Source: %s\n' "$source_dir"
-    printf '[DEBUG] Destination: %s\n' "$destination_dir"
 
     [[ -d "$source_dir" ]] \
         || agboot_fatal "Configuration source directory not found: $source_dir"
@@ -264,14 +263,27 @@ copy_configs() {
     sudo mkdir -p "$destination_dir" \
         || agboot_fatal "Failed to create AGBOOT configuration directory."
 
-    sudo cp -av -- "$source_dir/." "$destination_dir/" \
-        || agboot_fatal "Failed to copy configuration files to AGBOOT."
+    for file in "$source_dir"/*; do
+            [[ -f "$file" ]] || continue
 
-    echo
-    msg "Checking copied files..."
+            name="${file##*/}"
 
-    sudo ls -la "$AGBOOT_MOUNT"
-    sudo ls -la "$destination_dir"
+            sudo install \
+                --owner=0 \
+                --group=0 \
+                --mode=0644 \
+                "$file" \
+                "$destination_dir/$name" \
+                || agboot_fatal "Failed to copy $name to AGBOOT."
+
+            sudo cmp -s "$file" "$destination_dir/$name" \
+                || agboot_fatal "Verification failed for $name on AGBOOT."
+
+            copied=$((copied + 1))
+        done
+
+        (( copied > 0 )) \
+            || warn "No configuration files found in: $source_dir"
 
     success "Configuration files copied to AGBOOT."
 }
