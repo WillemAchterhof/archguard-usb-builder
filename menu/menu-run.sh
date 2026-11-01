@@ -24,5 +24,5 @@ source "$DIR_MENU/input.sh"
 # Load Submenu Entry Points
 # ==============================================================================
 
-source "$MENU_BASE\base-run.sh"
-source "$MENU_SOFTWARE\software-run.sh"
+source "$MENU_BASE/base-run.sh"
+source "$MENU_SOFTWARE/software-run.sh"
