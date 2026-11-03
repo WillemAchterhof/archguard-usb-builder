@@ -76,7 +76,10 @@ base_configuration_menu() {
                 fi
                 ;;
             s|S)
-                base_save_config
+                if base_save_config; then
+                    msg "Base Configuration saved successfully."
+                fi
+                read -r -p "Press Enter to continue..." _
                 ;;
             q|Q)
                 base_unmount_agboot
