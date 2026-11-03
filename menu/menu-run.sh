@@ -9,22 +9,23 @@
 # Menu Variables
 # ==============================================================================
 
-MENU_BASE="$DIR_MENU/base"
-MENU_SOFTWARE="$DIR_MENU/software"
+# MENU_BASE="$DIR_MENU/base"
+# MENU_SOFTWARE="$DIR_MENU/software"
 
 # ==============================================================================
 # Load Shared Menu Components
 # ==============================================================================
 
-source "$DIR_MENU/menu.sh"
-source "$DIR_MENU/render.sh"
-source "$DIR_MENU/input.sh"
+# source "$DIR_MENU/menu.sh"
+# source "$DIR_MENU/render.sh"
+# source "$DIR_MENU/input.sh"
 
 # ==============================================================================
 # Load Submenu Entry Points
 # ==============================================================================
 
-source "$MENU_BASE/base-device.sh"
-source "$MENU_BASE/base-edit.sh"
-source "$MENU_BASE/base-run.sh"
-source "$MENU_SOFTWARE/software-run.sh"
+source "$DIR_MENU/base-device.sh"
+source "$DIR_MENU/base-edit.sh"
+source "$DIR_MENU/base-run.sh"
+source "$DIR_MENU/software-edit.sh"
+source "$DIR_MENU/software-run.sh"
