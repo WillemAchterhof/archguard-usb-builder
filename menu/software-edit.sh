@@ -55,8 +55,23 @@ software_edit_config() {
 }
 
 software_save_config() {
+    if [[ -z "${BASE_AGBOOT_ROOT:-}" ]]; then
+        msg "AGBOOT is not mounted."
+        return 1
+    fi
+
+    if [[ ! -f "$BASE_AGBOOT_ROOT/$BASE_CONFIG_DIR/$SOFTWARE_CONFIG_FILE" ]]; then
+        msg "Software Configuration file not found."
+        return 1
+    fi
+
     if ! software_load_config; then
         msg "Configuration could not be reloaded. Check the file for errors."
+        return 1
+    fi
+
+    if ! validate_software; then
+        msg "Software Configuration contains invalid packages. Please correct them."
         return 1
     fi
 
@@ -65,6 +80,6 @@ software_save_config() {
         return 1
     fi
 
-    msg "Software Configuration saved."
+    success "Software Configuration saved and validated."
     return 0
 }
