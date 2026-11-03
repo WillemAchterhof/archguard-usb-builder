@@ -6,7 +6,14 @@
 # /menu/menu-run.sh
 
 # ==============================================================================
-# Load Submenu Entry Points
+# Load Validation
+# ==============================================================================
+
+source "$DIR_MAIN/validate/validate-base.sh"
+source "$DIR_MAIN/validate/validate-software.sh"
+
+# ==============================================================================
+# Load Menu Functions
 # ==============================================================================
 
 source "$DIR_MENU/agboot-device.sh"
