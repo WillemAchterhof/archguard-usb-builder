@@ -34,15 +34,27 @@ validate_software() {
 
         unset -n packages
     done
-
+    
     if (( ${#missing_packages[@]} > 0 )); then
         msg "The following packages were not found in the repositories:"
-
+    
         for package in "${missing_packages[@]}"; do
             msg "  - $package"
         done
-
-        return 1
+    
+        echo
+        read -r -p "Edit the software configuration to correct these packages? [y/N]: " choice
+    
+        case "$choice" in
+            y|Y)
+                software_edit_config
+                return 1
+                ;;
+            *)
+                msg "Software configuration was not changed."
+                return 1
+                ;;
+        esac
     fi
 
     success "All software packages are available."
