@@ -51,6 +51,7 @@ software_configuration_menu() {
                 ;;
             s|S)
                 software_save_config
+                read -r -p "Press Enter to continue..." _
                 ;;
             q|Q)
                 base_unmount_agboot
