@@ -94,6 +94,11 @@ base_save_config() {
         return 1
     fi
 
-    msg "Base Configuration saved."
+    if ! validate_base_config; then
+        msg "Base Configuration contains invalid settings. Please correct them."
+        return 1
+    fi
+
+    success "Base Configuration saved and validated."
     return 0
 }
