@@ -9,7 +9,7 @@
 # Load Submenu Entry Points
 # ==============================================================================
 
-source "$DIR_MENU/check-agboot.sh"
+source "$DIR_MENU/agboot-device.sh"
 source "$DIR_MENU/base-edit.sh"
 source "$DIR_MENU/base-run.sh"
 source "$DIR_MENU/software-edit.sh"
