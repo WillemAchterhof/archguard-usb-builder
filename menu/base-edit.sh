@@ -1,4 +1,3 @@
-
 #!/usr/bin/env bash
 # ArchGuard USB Builder - Base Configuration Editor
 # /menu/base/base-edit.sh
