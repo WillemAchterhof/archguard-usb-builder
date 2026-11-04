@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ArchGuard USB Builder - Base Configuration Menu
-# /menu/base/base-run.sh
+# /menu/base-run.sh
 
 readonly BASE_CONFIG_DIR="config-files"
 readonly BASE_CONFIG_FILE="config-base.env"
