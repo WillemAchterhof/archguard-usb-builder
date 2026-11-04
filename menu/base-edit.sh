@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ArchGuard USB Builder - Base Configuration Editor
-# /menu/base/base-edit.sh
+# /menu/base-edit.sh
 
 base_load_config() {
     local config_path
