@@ -1,7 +1,7 @@
 
 #!/usr/bin/env bash
 # ArchGuard USB Builder - Base Configuration Device
-# /menu/base/base-device.sh
+# /menu/base-device.sh
 
 readonly BASE_AGBOOT_LABEL="AGBOOT"
 readonly BASE_AGBOOT_DEFAULT_MOUNT="/run/archguard/agboot"
