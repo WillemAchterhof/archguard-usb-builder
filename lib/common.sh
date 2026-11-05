@@ -87,10 +87,12 @@ cleanup(){
         PACKAGES_ADDED=()
     fi
 
-    if [[ -d "${DIR_PROJECT:-}" ]]; then
-        msg "Removing project: $DIR_PROJECT"
-
-        sudo rm -rf -- "$DIR_PROJECT" || true
+    if [[ -n "${DIR_MAIN:-}" &&
+          "$DIR_MAIN" != "/" &&
+          -d "$DIR_MAIN" ]]; then
+    
+        msg "Removing project: $DIR_MAIN"
+        sudo rm -rf -- "$DIR_MAIN" || true
     fi
 
     sudo -K || true
