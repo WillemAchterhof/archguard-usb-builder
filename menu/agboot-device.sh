@@ -17,12 +17,30 @@ base_mount_agboot() {
     local device
     local mountpoint
 
-    # Find the AGBOOT partition.
+    # A USB disk must be selected.
+    if [[ -z "${AG_USB_DISK:-}" || ! -b "$AG_USB_DISK" ]]; then
+        msg "No valid USB disk selected."
+        return 1
+    fi
+
+    # Find AGBOOT only on the selected USB disk.
     mapfile -t devices < <(
-        lsblk -rpn -o NAME,LABEL,TYPE |
+        lsblk -nrpo NAME,LABEL,TYPE,FSTYPE "$AG_USB_DISK" |
             awk -v label="$BASE_AGBOOT_LABEL" \
-                '$2 == label && $3 == "part" { print $1 }'
+                '$2 == label && $3 == "part" && $4 == "ext4" { print $1 }'
     )
+
+    if (( ${#devices[@]} == 0 )); then
+        msg "No AGBOOT partition found on selected USB disk."
+        return 1
+    fi
+
+    if (( ${#devices[@]} > 1 )); then
+        msg "Multiple AGBOOT partitions found on selected USB disk."
+        return 1
+    fi
+
+    device="${devices[0]}"
 
     if (( ${#devices[@]} == 0 )); then
         msg "No AGBOOT partition found."
